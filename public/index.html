@@ -22,9 +22,9 @@
             console.log("Perdimos comunicacion con el servidor");
         })
 
-        socket.emit('mensaje', {nombre: 'Fernando'});
-        socket.on('mensaje', (payload) => {
-            console.log("Mensaje de retorno", payload)
+        socket.on('active-bands', (bands) => {
+            console.clear();
+            console.table("Bandas", bands);
         })
     </script>
 </body>
