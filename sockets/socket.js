@@ -10,16 +10,16 @@ bands.addBand( new Band('metallica') )
 bands.addBand( new Band('nana pancha') )
 bands.addBand( new Band('rude boys') )
 
-console.log(bands)
+// console.log(bands)
 
 // Mensajes de sockets
 io.on('connection', client => {
     console.log("Cliente conectado");
 
-    client.emit('active-bands', bands)
+    client.emit('active-bands', bands.getBands());
 
     client.on('disconnect', () => {
-        console.log("Cliente desconectado")
+        console.log("Cliente desconectado");
     });
 
 
@@ -28,9 +28,19 @@ io.on('connection', client => {
         io.emit('mensaje', {admin: 'Nuevo mensaje' });
     });
 
-    client.on('emitir-mensaje', (payload) => {
-	console.log("Flutter socket", payload)
-	client.broadcast.emit('nuevo-mensaje', payload);
+    client.on('vote-band', (payload) => {
+        bands.voteBand(payload.id);
+        io.emit('active-bands', bands.getBands());
+    });
+
+    client.on('add-band', (payload) => {
+        bands.addBand(new Band(payload.name));
+        io.emit('active-bands', bands.getBands());
+    });
+
+    client.on('delete-band', (payload) => {
+        bands.deleteBand(payload.id);
+        io.emit('active-bands', bands.getBands());
     });
 
 });
